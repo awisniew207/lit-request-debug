@@ -59,7 +59,6 @@ export const runExample = async () => {
         await ethersSigner0.getAddress()
       );
 
-
     const { capacityDelegationAuthSig } =
       await litNodeClient.createCapacityDelegationAuthSig({
         dAppOwnerWallet: ethersSigner1,
