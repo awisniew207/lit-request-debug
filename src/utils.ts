@@ -21,7 +21,7 @@ export const getEthersSigner = (ethereumPrivateKey: string) => {
 export const getLitNodeClient = async () => {
   const litNodeClient = new LitNodeClient({
     litNetwork: LitNetwork.Datil,
-    debug: true,
+    debug: false,
   });
   await litNodeClient.connect();
   return litNodeClient;
