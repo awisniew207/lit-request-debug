@@ -11,16 +11,14 @@ import { LIT_ABILITY, LIT_NETWORK } from "@lit-protocol/constants";
 import { ethers } from "ethers";
 import { LitContracts } from "@lit-protocol/contracts-sdk";
 
-const ETHEREUM_PRIVATE_KEY0 = getEnv("ETHEREUM_PRIVATE_KEY0");
-const ETHEREUM_PRIVATE_KEY1 = getEnv("ETHEREUM_PRIVATE_KEY1");
+const ETHEREUM_PRIVATE_KEY = getEnv("ETHEREUM_PRIVATE_KEY");
 
 export const runExample = async () => {
   let litNodeClient: LitNodeClient;
 
   try {
     const randomWallet = ethers.Wallet.createRandom();
-    const ethersSigner0 = getEthersSigner(ETHEREUM_PRIVATE_KEY0);
-    const ethersSigner1 = getEthersSigner(ETHEREUM_PRIVATE_KEY1);
+    const ethersSigner = getEthersSigner(ETHEREUM_PRIVATE_KEY);
     litNodeClient = await getLitNodeClient();
 
     const accessControlConditions: AccessControlConditions = [
@@ -48,21 +46,27 @@ export const runExample = async () => {
     console.log(`ℹ️  dataToEncryptHashh: ${dataToEncryptHash}`);
 
     const litContracts = new LitContracts({
-      signer: ethersSigner1,
-      network: LIT_NETWORK.DatilTest,
+      signer: ethersSigner,
+      network: LIT_NETWORK.Datil,
       debug: false,
     });
     await litContracts.connect();
 
     const tokens =
       await litContracts.rateLimitNftContractUtils.read.getTokensByOwnerAddress(
-        await ethersSigner0.getAddress()
+        await ethersSigner.getAddress()
       );
+
+    const capacityTokenId = `${tokens[tokens.length - 1].tokenId}`;
+    console.log("capacityTokenId", capacityTokenId);
+    const token = tokens[tokens.length - 1].tokenId;
+    console.log("token", token);
+    
 
     const { capacityDelegationAuthSig } =
       await litNodeClient.createCapacityDelegationAuthSig({
-        dAppOwnerWallet: ethersSigner1,
-        capacityTokenId: tokens[tokens.length - 1].tokenId,
+        dAppOwnerWallet: ethersSigner,
+        capacityTokenId: String(tokens[tokens.length - 1].tokenId),
         delegateeAddresses: [await randomWallet.getAddress()],
         uses: "1",
       });
